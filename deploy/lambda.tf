@@ -43,9 +43,9 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 
 
 resource "aws_lambda_function" "lambda" {
-  provider         = "${var.service_name}"
+  provider         = "aws.sys_admin"
   filename         = "${data.archive_file.lambda.output_path}"
-  function_name    = "lambda-spike"
+  function_name    = "${var.service_name}"
   role             = "${aws_iam_role.lambda_role.arn}"
   handler          = "lambda_handler.handler"
   source_code_hash = "${base64sha256(file("${data.archive_file.lambda.output_path}"))}"
@@ -111,7 +111,7 @@ EOF
 
 resource "aws_iam_role" "lambda_role" {
   provider = "aws.iam_admin"
-  name     = "lambda-spike"
+  name     = "${var.service_name}"
 
   assume_role_policy = <<EOF
 {
