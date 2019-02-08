@@ -43,7 +43,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
 
 
 resource "aws_lambda_function" "lambda" {
-  provider         = "aws.sys_admin"
+  provider         = "${var.service_name}"
   filename         = "${data.archive_file.lambda.output_path}"
   function_name    = "lambda-spike"
   role             = "${aws_iam_role.lambda_role.arn}"
