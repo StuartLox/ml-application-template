@@ -1,2 +1,7 @@
 def handler(event, context):
-    return "Hello World"
+    response = {
+            "statusCode": 200, 
+            "headers": {"Content-Type": "application/json"},
+            "body": "\"This is a valid api response\""
+    }
+    return response
