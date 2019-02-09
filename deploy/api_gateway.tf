@@ -1,33 +1,57 @@
-resource "aws_api_gateway_rest_api" "MyDemoAPI" {
+resource "aws_api_gateway_rest_api" "api" {
   provider    = "aws.sys_admin"
-  name        = "MyDemoAPI"
+  name        = "api"
   description = "This is my API for demonstration purposes"
 }
 
-resource "aws_api_gateway_resource" "MyDemoResource" {
+resource "aws_api_gateway_deployment" "deployment" {
   provider    = "aws.sys_admin"
-  rest_api_id = "${aws_api_gateway_rest_api.MyDemoAPI.id}"
-  parent_id   = "${aws_api_gateway_rest_api.MyDemoAPI.root_resource_id}"
-  path_part   = "mydemoresource"
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  stage_name  = "dev"
+  depends_on  = [
+    "aws_api_gateway_integration.lambda_get",
+    "aws_api_gateway_integration.lambda_post"
+  ]
 }
 
-resource "aws_api_gateway_method" "MyDemoMethod" {
-  provider      = "aws.sys_admin"
-  rest_api_id   = "${aws_api_gateway_rest_api.MyDemoAPI.id}"
-  resource_id   = "${aws_api_gateway_resource.MyDemoResource.id}"
+resource "aws_api_gateway_resource" "proxy" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_rest_api.api.root_resource_id}"
+  path_part   = "{proxy+}"
+}
+
+resource "aws_api_gateway_method" "proxy_get" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.proxy.id}"
   http_method   = "GET"
   authorization = "NONE"
+  api_key_required = true
 }
 
-
-resource "aws_api_gateway_integration" "integration" {
-  provider                = "aws.sys_admin"
-  rest_api_id             = "${aws_api_gateway_rest_api.MyDemoAPI.id}"
-  resource_id             = "${aws_api_gateway_resource.MyDemoResource.id}"
-  http_method             = "${aws_api_gateway_method.MyDemoMethod.http_method}"
+resource "aws_api_gateway_integration" "lambda_get" {
+  rest_api_id             = "${aws_api_gateway_rest_api.api.id}"
+  resource_id             = "${aws_api_gateway_method.proxy_get.resource_id}"
+  http_method             = "${aws_api_gateway_method.proxy_get.http_method}"
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.lambda.invoke_arn}"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
+resource "aws_api_gateway_method" "proxy_post" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.proxy.id}"
+  http_method   = "POST"
+  authorization = "NONE"
+  api_key_required = true
+}
+
+resource "aws_api_gateway_integration" "lambda_post" {
+  rest_api_id             = "${aws_api_gateway_rest_api.api.id}"
+  resource_id             = "${aws_api_gateway_method.proxy_post.resource_id}"
+  http_method             = "${aws_api_gateway_method.proxy_post.http_method}"
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
 resource "aws_lambda_permission" "lambda_permission" {
@@ -36,12 +60,5 @@ resource "aws_lambda_permission" "lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = "${var.service_name}"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "arn:aws:execute-api:ap-southeast-2:224041885527:${aws_api_gateway_rest_api.MyDemoAPI.id}/*/${aws_api_gateway_method.MyDemoMethod.http_method}${aws_api_gateway_resource.MyDemoResource.path}"
-}
-
-resource "aws_api_gateway_deployment" "dev" {
-  provider    = "aws.sys_admin"
-  depends_on  = ["aws_api_gateway_integration.integration"]
-  rest_api_id = "${aws_api_gateway_rest_api.MyDemoAPI.id}"
-  stage_name  = "dev"
+  source_arn = "${aws_api_gateway_deployment.deployment.execution_arn}/*/*"
 }
