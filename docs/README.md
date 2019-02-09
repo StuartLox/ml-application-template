@@ -1,8 +1,12 @@
 # Terraform Spike
 
 ## Objective
-* To use terraform to provision the required aws resources to deploy a machine learning model to production.
-* CI/CD Pipeline to be deployed using CircleCI
+* Build a serverless ML application in AWS that utilises a CI/CD pipeline.
+
+## Tools
+* AWS - Lambda, API Gateway, Sagemaker, S3.
+* Terraform - Infrastructure as code.
+* CircleCI - Test and build.
 
 ## Data Driven Architecture
 [![Serverless Deployment ML](Serverless_Deployment_ML.png)](Serverless_Deployment_ML.png)
