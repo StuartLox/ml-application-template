@@ -1,23 +1,8 @@
-terraform {
-  backend "s3" {}
-}
-
-provider "aws" {
-  region = "ap-southeast-2"
-  alias = "sys_admin"
-}
-
-provider "aws" {
-  region = "ap-southeast-2"
-  alias = "iam_admin"
-}
-
 data "archive_file" "lambda" {
   type        = "zip"
   source_dir  = "${path.module}/../src"
   output_path = "${path.module}/lambda.zip"
 }
-
 
 resource "aws_lambda_function" "lambda" {
   provider         = "aws.sys_admin"
@@ -38,7 +23,6 @@ environment {
     }
   }
 }
-
 
 resource "aws_iam_role_policy" "lambda_role_policy" {
   provider  = "aws.iam_admin"
