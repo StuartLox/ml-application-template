@@ -7,7 +7,7 @@ from flask import (
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route("/", methods=["GET"])
 def index():
     response = {
         "statusCode": 200, 
@@ -19,3 +19,10 @@ def index():
 
 def handler(event, context):
     return awsgi.response(app, event, context)
+
+if __name__ == "__main__":
+    event = {"body": None, "httpMethod": "GET", 
+             "path": "/", "queryStringParameters": {}, 
+             "headers": {"host": "localhost",
+                         "x-forwarded-proto": "http"}}
+    print(handler(event, None))
