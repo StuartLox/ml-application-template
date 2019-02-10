@@ -1,28 +1,21 @@
 import awsgi
+import flask
 from flask import (
     Flask,
     jsonify,
+    request
 )
 
 app = Flask(__name__)
 
 
-@app.route("/", methods=["GET"])
+@app.route("/data", methods=["GET","POST"])
 def index():
-    response = {
-        "statusCode": 200, 
-        "headers": {"Content-Type": "application/json"},
-        "body": "\"This is a valid api response\""
-    }
-    return jsonify(status=200, message=response)
-
+    method = request.environ['awsgi.event']['httpMethod']
+    if method == "POST":
+        return jsonify(message=request.environ['awsgi.event']['body'])
+    elif method == "GET":
+        return jsonify(message="Hello this is me")
 
 def handler(event, context):
     return awsgi.response(app, event, context)
-
-if __name__ == "__main__":
-    event = {"body": None, "httpMethod": "GET", 
-             "path": "/", "queryStringParameters": {}, 
-             "headers": {"host": "localhost",
-                         "x-forwarded-proto": "http"}}
-    print(handler(event, None))
