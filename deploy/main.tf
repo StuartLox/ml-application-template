@@ -15,3 +15,7 @@ provider "aws" {
 module "fronend_api" {
   source = "./frontend_api"
 }
+
+module "sagemaker" {
+  source = "./sagemaker"
+}
