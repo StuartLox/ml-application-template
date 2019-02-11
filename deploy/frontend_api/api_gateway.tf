@@ -22,11 +22,11 @@ resource "aws_api_gateway_resource" "proxy" {
 }
 
 resource "aws_api_gateway_method" "proxy_get" {
-  provider      = "aws.sys_admin"
-  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  resource_id   = "${aws_api_gateway_resource.proxy.id}"
-  http_method   = "GET"
-  authorization = "NONE"
+  provider         = "aws.sys_admin"
+  rest_api_id      = "${aws_api_gateway_rest_api.api.id}"
+  resource_id      = "${aws_api_gateway_resource.proxy.id}"
+  http_method      = "GET"
+  authorization    = "NONE"
   api_key_required = false
 }
 
@@ -41,11 +41,11 @@ resource "aws_api_gateway_integration" "lambda_get" {
 }
 
 resource "aws_api_gateway_method" "proxy_post" {
-  provider      = "aws.sys_admin"
-  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
-  resource_id   = "${aws_api_gateway_resource.proxy.id}"
-  http_method   = "POST"
-  authorization = "NONE"
+  provider         = "aws.sys_admin"
+  rest_api_id      = "${aws_api_gateway_rest_api.api.id}"
+  resource_id      = "${aws_api_gateway_resource.proxy.id}"
+  http_method      = "POST"
+  authorization    = "NONE"
   api_key_required = false
 }
 
@@ -65,5 +65,5 @@ resource "aws_lambda_permission" "lambda_permission" {
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.lambda.arn}"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
 }
