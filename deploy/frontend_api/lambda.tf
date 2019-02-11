@@ -1,7 +1,8 @@
 data "archive_file" "lambda" {
   type        = "zip"
-  source_dir  = "${path.module}/../src"
-  output_path = "${path.module}/lambda.zip"
+  source_dir  = "../src"
+  # source_dir  = "/Users/stuart/Documents/2018/2019/terraform-spike/src"
+  output_path = "${path.module}/../lambda.zip"
 }
 
 resource "aws_lambda_function" "lambda" {
