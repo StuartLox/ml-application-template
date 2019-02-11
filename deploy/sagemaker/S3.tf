@@ -1,13 +1,12 @@
-data "archive_file" "model" {
+data "archive_file" "notebook" {
   type        = "zip"
-  source_dir  = "../src"
-  output_path = "${path.module}/../model.zip"
+  source_dir  = "../notebook"
+  output_path = "${path.module}/../notebook.zip"
 }
 
 resource "aws_s3_bucket_object" "object" {
   provider = "aws.sys_admin"
   bucket   = "pocketbook-transaction-data"
-  key      = "model/model.zip"
-  source   = "${path.module}/../model.zip"
-  etag     = "${md5(file("${path.module}/../model.zip"))}"
+  key      = "notebook/notebook.zip"
+  source   = "${path.module}/../notebook.zip"
 }
