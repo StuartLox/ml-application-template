@@ -1,7 +1,7 @@
 resource "aws_api_gateway_rest_api" "api" {
   provider    = "aws.sys_admin"
   name        = "api"
-  description = "This is my API for demonstration purposes"
+  description = "Frontend API for connecting with sagemaker"
 }
 
 resource "aws_api_gateway_deployment" "deployment" {
