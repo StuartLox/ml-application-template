@@ -1,0 +1,83 @@
+# deploy-defaults: &deployDefaults
+#   working_directory: ~/xinja_aps910_xplan_extractor
+#   docker:
+#     - image: xinja-docker-image-release-candidates.bintray.io/env-deployer:4bdeaee
+#       auth:
+#         username: $BINTRAY_USER 
+#         password: $BINTRAY_PASS
+#   steps:
+#     - checkout
+#     - attach_workspace:
+#         at: ~/xinja_aps910_xplan_extractor
+#     - run: cd deploy && terragrunt apply -auto-approve
+# version: 2
+# jobs:
+#   build_and_test:
+#     working_directory: ~/xinja_aps910_xplan_extractor
+#     docker:
+#       - image: circleci/python:3.6.1
+#     environment:
+#       ENV: stage
+#       S3_CONFIG_BUCKET: xinja-data-stage-account-aps910
+ 
+#     steps:
+#       - checkout
+#       - attach_workspace:
+#           at: ~/xinja_aps910_xplan_extractor
+#       - restore_cache:
+#           keys:
+#             # Find a cache corresponding to this specific package.json checksum
+#             # when this file is changed, this key will fail
+#             - requirements-{{ checksum "src/requirements.txt" }}
+#       - run: cd src && sudo pip install -r requirements.txt -t .
+#       - run: cd src/tests && python -m unittest discover
+#       - save_cache:
+#           key: requirements-{{ checksum "requirements.txt" }}
+#           paths:
+#             - src
+#       - persist_to_workspace:
+#           root: .
+#           paths:
+#             - src
+
+#   deploy_stage:
+#     <<: *deployDefaults
+#     environment:
+#       TF_VAR_environment: stage
+#       TF_VAR_service_name: xinja_aps910_xplan_extractor
+#       TF_VAR_account: nonprod
+#       TF_VAR_region: ap-southeast-2
+#       TF_VAR_xplan_user: $XPLAN_USER
+#       TF_VAR_xplan_pass: $XPLAN_PASS
+
+#   deploy_prod:
+#     <<: *deployDefaults
+#     environment:
+#       TF_VAR_environment: prod
+#       TF_VAR_service_name: xinja_aps910_xplan_extractor
+#       TF_VAR_account: prod
+#       TF_VAR_region: ap-southeast-2
+#       TF_VAR_xplan_user: $XPLAN_USER
+#       TF_VAR_xplan_pass: $XPLAN_PASS
+
+# workflows:
+#   version: 2
+#   build_and_deploy:
+#     jobs:
+#       - build_and_test:
+#           context: mgmt
+#       - deploy_stage:
+#           requires:
+#             - build_and_test
+#           context: mgmt
+#           filters:
+#             branches:
+#               only: master
+#       - hold:
+#           type: approval
+#           requires:
+#            - deploy_stage
+#       - deploy_prod:
+#           requires:
+#             - hold
+#           context: mgmt

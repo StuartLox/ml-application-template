@@ -7,11 +7,11 @@ function poll_sagemaker() {
     time=0
     expected_status=$1
     status=$($2)
-    while [ $expected_status != $status ]
+    while [ $expected_status != $(get_notebook_instance_status) ]
     do
         time=$(( $time + 20 ))
         sleep 10
-        echo "Start Notebook ${notebook_name} instance: Still $(get_notebook_instance_status)... ${time}s elapsed)"
+        echo "${expected_status} --notebook-instance-name ${notebook_name}: Still $(get_notebook_instance_status)... ${time}s elapsed)"
     done 
 }
 
@@ -36,6 +36,6 @@ function main() {
     action_notebook "start" "InService" 
 }
 
-# Execute Script.
+# # Execute Script.
 notebook_name=$1
 main $notebook_name
