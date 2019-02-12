@@ -11,7 +11,7 @@ function poll_sagemaker() {
     do
         time=$(( $time + 20 ))
         sleep 10
-        echo "Start Notebook ${notbook_name} instance: Still $(get_notebook_instance_status)... ${time}s elapsed)"
+        echo "Start Notebook ${notebook_name} instance: Still $(get_notebook_instance_status)... ${time}s elapsed)"
     done 
 }
 
