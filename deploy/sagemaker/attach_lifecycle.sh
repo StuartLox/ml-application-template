@@ -27,12 +27,12 @@ function attach_lifecycle_config() {
     aws sagemaker update-notebook-instance \
        --notebook-instance-name $notebook_name \
        --lifecycle-config-name cf-cicd-dev-sagemaker-lifecycle
+    poll_sagemaker "stop" "Stopped"
 }
 
 function main() {
-    # action_notebook "stop" "Stopped" 
-    attach_lifecycle_config
     action_notebook "stop" "Stopped" 
+    attach_lifecycle_config
     action_notebook "start" "InService" 
 }
 
