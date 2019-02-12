@@ -1,10 +1,5 @@
 deploy-defaults: &deployDefaults
   working_directory: ~/ml_application_template
-  docker:
-    - image: xinja-docker-image-release-candidates.bintray.io/env-deployer:4bdeaee
-      auth:
-        username: $BINTRAY_USER 
-        password: $BINTRAY_PASS
   steps:
     - checkout
     - attach_workspace:
