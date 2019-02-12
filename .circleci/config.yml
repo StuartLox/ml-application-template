@@ -12,7 +12,7 @@ jobs:
     docker:
       - image: circleci/python:3.6.1
     environment:
-      ENV: stage
+      ENV: dev
  
     steps:
       - checkout
@@ -22,17 +22,17 @@ jobs:
           keys:
             # Find a cache corresponding to this specific package.json checksum
             # when this file is changed, this key will fail
-            - requirements-{{ checksum "src/requirements.txt" }}
-      - run: cd src && sudo pip install -r requirements.txt -t .
-      - run: cd src/tests && python -m unittest discover
+            - requirements-{{ checksum "frontend_api/src/requirements.txt" }}
+      - run: cd frontend_api/src && sudo pip install -r requirements.txt -t .
+      - run: cd frontend_api/src/tests && python -m unittest discover
       - save_cache:
           key: requirements-{{ checksum "requirements.txt" }}
           paths:
-            - src
+            - frontend_api/src
       - persist_to_workspace:
           root: .
           paths:
-            - src
+            - frontend_api/src
 
   deploy_stage:
     <<: *deployDefaults
@@ -56,11 +56,11 @@ workflows:
   build_and_deploy:
     jobs:
       - build_and_test:
-          context: mgmt
-      - deploy_stage:
+          context: personal_account
+      - deploy_dev:
           requires:
             - build_and_test
-          context: mgmt
+          context: personal_account
           filters:
             branches:
               only: master
@@ -71,4 +71,4 @@ workflows:
       - deploy_prod:
           requires:
             - hold
-          context: mgmt
+          context: personal_account
