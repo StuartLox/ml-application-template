@@ -2,6 +2,7 @@ function get_notebook_instance_status() {
     eval status=$(aws sagemaker describe-notebook-instance --notebook-instance-name ${notebook_name} --query NotebookInstanceStatus)
     echo $status
 }
+
 function poll_sagemaker() {
     time=0
     expected_status=$1
@@ -10,8 +11,7 @@ function poll_sagemaker() {
     do
         time=$(( $time + 20 ))
         sleep 10
-        eval status=get_notebook_instance_status
-        echo "Start Notebook ${notbook_name} instance: Still ${status}... (${time}s elapsed)"
+        echo "Start Notebook ${notbook_name} instance: Still $(get_notebook_instance_status)... ${time}s elapsed)"
     done 
 }
 
@@ -28,8 +28,8 @@ function attach_lifecycle_config() {
 
 function main() {
     notebook_name=$1
-    action_notebook "stop" "Stopped" 
-    attach_lifecycle_config
+    # action_notebook "stop" "Stopped" 
+    # attach_lifecycle_config
     action_notebook "start" "InService" 
 }
 
