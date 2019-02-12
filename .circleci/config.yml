@@ -34,22 +34,13 @@ jobs:
           paths:
             - frontend_api/src
 
-  deploy_stage:
+  deploy_dev:
     <<: *deployDefaults
     environment:
-      TF_VAR_environment: stage
+      TF_VAR_environment: dev
       TF_VAR_region: ap-southeast-2
-      TF_VAR_service_name: ml_application_template
       TF_VAR_account: nonprod
       
-
-  deploy_prod:
-    <<: *deployDefaults
-    environment:
-      TF_VAR_environment: prod
-      TF_VAR_region: ap-southeast-2
-      TF_VAR_service_name: ml_application_template
-
 
 workflows:
   version: 2
