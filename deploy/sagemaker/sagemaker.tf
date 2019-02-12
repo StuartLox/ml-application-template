@@ -8,8 +8,10 @@ resource "aws_sagemaker_notebook_instance" "notebook" {
 
 resource "null_resource" "attach_lifecyle" {
   provisioner "local-exec" {
-    command =  "attach_lifecycle.sh"
-          
+    command = <<EOF
+     chmod +x
+     attach_lifecycle.sh ${aws_sagemaker_notebook_instance.notebook.name}"
+    EOF
+        
   }
-  depends_on = ["aws_sagemaker_notebook_instance.notebook"]
 }

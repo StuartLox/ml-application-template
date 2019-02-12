@@ -1,8 +1,7 @@
 function get_notebook_instance_status() {
-    eval status=$(aws sagemaker describe-notebook-instance --notebook-instance-name notebook-spike-instance --query NotebookInstanceStatus)
+    eval status=$(aws sagemaker describe-notebook-instance --notebook-instance-name ${notebook_name} --query NotebookInstanceStatus)
     echo $status
 }
-
 function poll_sagemaker() {
     time=0
     expected_status=$1
@@ -12,25 +11,27 @@ function poll_sagemaker() {
         time=$(( $time + 20 ))
         sleep 10
         eval status=get_notebook_instance_status
-        echo "Start Notebook notebook-spike instance: Still ${status}... (${time}s elapsed)"
+        echo "Start Notebook ${notbook_name} instance: Still ${status}... (${time}s elapsed)"
     done 
 }
 
 function action_notebook() {
     action=$1
     expected_status=$2
-    aws sagemaker $action-notebook-instance --notebook-instance-name notebook-spike-instance
+    aws sagemaker $action-notebook-instance --notebook-instance-name $notebook_name
     poll_sagemaker $expected_status get_notebook_instance_status
 }
 
 function attach_lifecycle_config() {
-    aws sagemaker update-notebook-instance --notebook-instance-name notebook-spike-instance --lifecycle-config-name cf-cicd-dev-sagemaker-lifecycle
+    aws sagemaker update-notebook-instance --notebook-instance-name $notebook_name --lifecycle-config-name cf-cicd-dev-sagemaker-lifecycle
 }
 
 function main() {
-    action_notebook "stop" "Stopped"
+    notebook_name=$1
+    action_notebook "stop" "Stopped" 
     attach_lifecycle_config
-    action_notebook "start" "InService"
+    action_notebook "start" "InService" 
 }
 
-main
+notebook_name=$1
+main $notebook_name
