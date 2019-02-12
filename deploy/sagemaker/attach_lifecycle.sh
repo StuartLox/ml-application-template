@@ -18,20 +18,24 @@ function poll_sagemaker() {
 function action_notebook() {
     action=$1
     expected_status=$2
-    aws sagemaker $action-notebook-instance --notebook-instance-name $notebook_name
+    aws sagemaker $action-notebook-instance \
+        --notebook-instance-name $notebook_name
     poll_sagemaker $expected_status get_notebook_instance_status
 }
 
 function attach_lifecycle_config() {
-    aws sagemaker update-notebook-instance --notebook-instance-name $notebook_name --lifecycle-config-name cf-cicd-dev-sagemaker-lifecycle
+    aws sagemaker update-notebook-instance \
+       --notebook-instance-name $notebook_name 
+       --lifecycle-config-name cf-cicd-dev-sagemaker-lifecycle
 }
 
 function main() {
     notebook_name=$1
-    # action_notebook "stop" "Stopped" 
-    # attach_lifecycle_config
+    action_notebook "stop" "Stopped" 
+    attach_lifecycle_config
     action_notebook "start" "InService" 
 }
 
+# Execute Script.
 notebook_name=$1
 main $notebook_name
