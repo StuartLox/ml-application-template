@@ -30,8 +30,9 @@ function attach_lifecycle_config() {
 }
 
 function main() {
-    action_notebook "stop" "Stopped" 
+    # action_notebook "stop" "Stopped" 
     attach_lifecycle_config
+    action_notebook "stop" "Stopped" 
     action_notebook "start" "InService" 
 }
 
