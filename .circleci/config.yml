@@ -1,5 +1,7 @@
 deploy-defaults: &deployDefaults
   working_directory: ~/ml_application_template
+  docker:
+      - image: circleci/python:3.6.1
   steps:
     - checkout
     - attach_workspace:
