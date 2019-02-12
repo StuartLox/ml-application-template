@@ -1,4 +1,4 @@
-# Terraform Spike
+# ML Application Template
 
 ## Objective
 * Build a serverless ML application in AWS that utilises a CI/CD pipeline.
