@@ -5,7 +5,6 @@ resource "aws_sagemaker_notebook_instance" "notebook" {
   instance_type = "ml.t2.medium"
 }
 
-
 resource "null_resource" "attach_lifecyle" {
   provisioner "local-exec" {
     command = <<EOF
