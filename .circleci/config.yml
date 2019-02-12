@@ -55,11 +55,11 @@ workflows:
           filters:
             branches:
               only: master
-      - hold:
-          type: approval
-          requires:
-           - deploy_stage
-      - deploy_prod:
-          requires:
-            - hold
-          context: personal_account
+      # - hold:
+      #     type: approval
+      #     requires:
+      #      - deploy_dev
+      # - deploy_prod:
+      #     requires:
+      #       - hold
+      #     context: personal_account
