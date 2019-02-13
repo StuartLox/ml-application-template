@@ -1,6 +1,6 @@
 resource "aws_iam_role_policy" "sagemaker_role_policy" {
   provider  = "aws.iam_admin"
-  name      = "lambda"
+  name      = "sagemaker_role"
   role      = "${aws_iam_role.sagemaker_role.id}"
   policy    = <<EOF
 {
@@ -34,8 +34,19 @@ resource "aws_iam_role_policy" "sagemaker_role_policy" {
                 "s3:GetObject"
             ],
             "Resource": [
-                "arn:aws:s3:::${aws_s3_bucket.sagemaker_bucket.id}",
-                "arn:aws:s3:::${aws_s3_bucket.sagemaker_bucket.id}/*"
+                "arn:aws:s3:::${aws_s3_bucket.ml_sagemaker_bucket.id}",
+                "arn:aws:s3:::${aws_s3_bucket.ml_sagemaker_bucket.id}/*"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "iam:GetRole",
+                "iam:GetRolePolicy"
+            ],
+            "Resource": [
+                "*"
             ]
         },
         {
