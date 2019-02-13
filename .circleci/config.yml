@@ -1,7 +1,7 @@
 deploy-defaults: &deployDefaults
   working_directory: ~/ml_application_template
   docker:
-      - image: darkjeff/terragrunt
+      - image: lysimon/docker-terragrunt
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
