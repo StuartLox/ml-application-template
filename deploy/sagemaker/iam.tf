@@ -34,8 +34,8 @@ resource "aws_iam_role_policy" "sagemaker_role_policy" {
                 "s3:GetObject"
             ],
             "Resource": [
-                "arn:aws:s3:::${aws_s3_bucket.sagemaker_bucket.bucket}",
-                "arn:aws:s3:::${aws_s3_bucket.sagemaker_bucket.bucket}/*"
+                "arn:aws:s3:::${aws_s3_bucket.sagemaker_bucket.id}",
+                "arn:aws:s3:::${aws_s3_bucket.sagemaker_bucket.id}/*"
             ]
         },
         {
