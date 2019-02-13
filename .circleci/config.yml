@@ -25,8 +25,11 @@ jobs:
             # Find a cache corresponding to this specific package.json checksum
             # when this file is changed, this key will fail
             - requirements-{{ checksum "frontend_api/src/requirements.txt" }}
-      - run: cd frontend_api/src && sudo pip install -r requirements.txt -t .
-      - run: cd frontend_api/src/tests && python -m unittest discover
+      - run: 
+        name: Install dependencies and run tests
+        command: |
+            cd frontend_api/src && sudo pip install -r requirements.txt -t .
+            python -m unittest discover
       - save_cache:
           key: requirements-{{ checksum "requirements.txt" }}
           paths:
@@ -57,11 +60,3 @@ workflows:
           filters:
             branches:
               only: master
-      # - hold:
-      #     type: approval
-      #     requires:
-      #      - deploy_dev
-      # - deploy_prod:
-      #     requires:
-      #       - hold
-      #     context: personal_account
