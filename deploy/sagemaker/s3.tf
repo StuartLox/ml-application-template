@@ -11,7 +11,7 @@ resource "aws_s3_bucket" "sagemaker_bucket" {
 
 resource "aws_s3_bucket_object" "object" {
   provider = "aws.sys_admin"
-  bucket   = "${aws_s3_bucket.bucket.id}"
+  bucket   = "${aws_s3_bucket.sagemaker_bucket.id}"
   key      = "notebook/notebook.zip"
   source   = "${path.module}/../notebook.zip"
 }
