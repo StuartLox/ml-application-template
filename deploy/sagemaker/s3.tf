@@ -5,8 +5,10 @@ data "archive_file" "notebook" {
 }
 
 resource "aws_s3_bucket" "sagemaker_bucket" {
-  bucket = "dev-sagemaker-bucket"
-  acl    = "private"
+  provider = "aws.sys_admin"
+  bucket   = "dev-sagemaker-bucket"
+  region   = "ap-southeast-2"
+  acl      = "private"
 }
 
 resource "aws_s3_bucket_object" "object" {
