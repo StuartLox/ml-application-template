@@ -10,3 +10,8 @@ resource "aws_s3_bucket_object" "object" {
   key      = "notebook/notebook.zip"
   source   = "${path.module}/../notebook.zip"
 }
+
+resource "aws_s3_bucket" "sagemaker_bucket" {
+  bucket = "my-tf-test-bucket"
+  acl    = "private"
+}

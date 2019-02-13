@@ -12,9 +12,9 @@ provider "aws" {
   alias = "iam_admin"
 }
 
-# module "sagemaker" {
-#   source = "./sagemaker"
-# }
+module "sagemaker" {
+  source = "./sagemaker"
+}
 
 module "fronend_api" {
   source = "./frontend_api"
