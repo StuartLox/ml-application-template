@@ -1,7 +1,7 @@
 deploy-defaults: &deployDefaults
   working_directory: ~/ml_application_template
   docker:
-      - image: circleci/python:3.6.1
+      - image: darkjeff/terragrunt
   steps:
     - checkout
     - attach_workspace:
@@ -40,8 +40,8 @@ jobs:
     <<: *deployDefaults
     environment:
       TF_VAR_environment: dev
-      TF_VAR_region: ap-southeast-2
       TF_VAR_account: nonprod
+      TF_VAR_region: ap-southeast-2
       
 
 workflows:
