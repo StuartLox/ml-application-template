@@ -26,10 +26,10 @@ jobs:
             # when this file is changed, this key will fail
             - requirements-{{ checksum "frontend_api/src/requirements.txt" }}
       - run: 
-        name: Install dependencies and run tests
-        command: |
-            cd frontend_api/src && sudo pip install -r requirements.txt -t .
-            python -m unittest discover
+          name: Install dependencies and run tests
+          command: |
+              cd frontend_api/src && sudo pip install -r requirements.txt -t .
+              python -m unittest discover
       - save_cache:
           key: requirements-{{ checksum "requirements.txt" }}
           paths:
