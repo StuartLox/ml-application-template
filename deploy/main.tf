@@ -5,6 +5,7 @@ terraform {
 provider "aws" {
   region = "ap-southeast-2"
   alias = "sys_admin"
+  source = "https://github.com/StuartLox/terraform-provider-aws"
 }
 
 provider "aws" {
