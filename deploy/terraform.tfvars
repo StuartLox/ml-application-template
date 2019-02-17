@@ -11,6 +11,11 @@ terragrunt = {
   }
 
   terraform {
+    extra_arguments "init_args" {
+      commands = [
+        "init"
+      ]
+    }
     extra_arguments "environment_vars" {
       arguments = [ 
         "-var-file=./${get_env("TF_VAR_account", "")}.tfvars"
