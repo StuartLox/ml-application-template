@@ -62,7 +62,6 @@ EOF
 }
 
 resource "aws_iam_role" "sagemaker_role" {
-  provider = "aws.iam_admin"
   name     = "${var.service_name}_sagemaker"
 
   assume_role_policy = <<EOF
