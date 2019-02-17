@@ -1,5 +1,4 @@
 resource "aws_iam_role_policy" "sagemaker_role_policy" {
-  provider  = "aws.iam_admin"
   name      = "sagemaker_role"
   role      = "${aws_iam_role.sagemaker_role.id}"
   policy    = <<EOF
