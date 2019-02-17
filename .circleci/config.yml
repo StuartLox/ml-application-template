@@ -9,7 +9,7 @@ deploy-defaults: &deployDefaults
     - checkout
     - attach_workspace:
         at: ~/ml_application_template
-    - run: cd deploy && terragrunt init && terragrunt apply -auto-approve
+    - run: cd deploy && terragrunt apply -auto-approve
 version: 2
 jobs:
   build_and_test:
