@@ -1,7 +1,7 @@
 deploy-defaults: &deployDefaults
   working_directory: ~/ml_application_template
   docker:
-      - image: stuartloxton/terraform-aws-docker:test
+      - image: stuartloxton/aws-terraform-docker:latest
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
