@@ -5,9 +5,9 @@ resource "aws_sagemaker_notebook_instance" "notebook" {
   lifecycle_config_name = "cf-cicd-dev-sagemaker-lifecycle"
 }
 
-data "archive_file" "notebook" {
-  type        = "zip"
-  source_dir  = "../notebook"
-  output_path = "${path.module}/../notebook.zip"
+resource "null_resource" "build_image" {
+  provisioner "local-exec" {
+    command = "cd ../notebook/container; chmod u+x ./build_image.sh; bash ./build_image.sh"
+  }
 }
 
