@@ -6,10 +6,6 @@ provider "aws" {
   region = "ap-southeast-2"
 }
 
-provider "terraform-provider-aws" {
-    region = "ap-southeast-2"
-}
-
 module "sagemaker" {
   source = "./sagemaker"
 }
