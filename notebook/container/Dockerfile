@@ -24,7 +24,7 @@ RUN pip3 install gevent
 RUN pip3 install gunicorn
 RUN pip3 install tensorflow
 RUN pip3 install keras
-RUN (cd /usr/local/lib/python3.6/dist-packages/scipy/.libs; rm *; ln ../../numpy/.libs/* .)
+# RUN (cd /usr/local/lib/python3.6/dist-packages/scipy/.libs; rm *; ln ../../numpy/.libs/* .)
 RUN rm -rf /root/.cache
 
 # Env Variables
