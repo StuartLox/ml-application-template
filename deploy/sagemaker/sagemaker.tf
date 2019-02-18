@@ -5,3 +5,9 @@ resource "aws_sagemaker_notebook_instance" "notebook" {
   lifecycle_config_name = "cf-cicd-dev-sagemaker-lifecycle"
 }
 
+data "archive_file" "notebook" {
+  type        = "zip"
+  source_dir  = "../notebook"
+  output_path = "${path.module}/../notebook.zip"
+}
+
