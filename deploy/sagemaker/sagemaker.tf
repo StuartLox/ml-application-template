@@ -4,3 +4,4 @@ resource "aws_sagemaker_notebook_instance" "notebook" {
   instance_type = "ml.t2.medium"
   lifecycle_config_name = "cf-cicd-dev-sagemaker-lifecycle"
 }
+
