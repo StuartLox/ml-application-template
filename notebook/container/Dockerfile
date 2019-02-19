@@ -34,3 +34,6 @@ ENV PATH="/opt/program:${PATH}"
 # Set up the program in the image
 COPY ann /opt/program
 WORKDIR /opt/program
+
+RUN chmod +x serve
+RUN chmod +x train

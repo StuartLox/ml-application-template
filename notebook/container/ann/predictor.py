@@ -22,7 +22,7 @@ model_path = os.path.join(prefix, 'model')
 # It has a predict function that does a prediction based on the model and the
 # input data.
 class ScoringService(object):
-    model = None                # Where we keep the model when it's loaded
+    model = None
 
     @classmethod
     def get_model(cls):
@@ -50,9 +50,9 @@ class ScoringService(object):
 
 
 def transform_data(dataset):
-    dataset = impute_missing_data(dataset)
+    dataset = [map(int, s.replace('?', np.nan)) for s in strs]
     # Set features and class variables.
-    dataset = dataset.values
+    # dataset = dataset.values
     X = dataset[:, 1:-1]
     y = dataset[:, -1]
 
@@ -65,7 +65,6 @@ def transform_data(dataset):
 
 # The flask app for serving predictions
 app = flask.Flask(__name__)
-
 
 @app.route('/ping', methods=['GET'])
 def ping():
