@@ -60,7 +60,14 @@ resource "aws_iam_role_policy" "sagemaker_role_policy" {
             "Sid": "",
             "Effect": "Allow",
             "Action": [
-                "ecr:*"
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetRepositoryPolicy",
+                "ecr:DescribeRepositories",
+                "ecr:ListImages",
+                "ecr:DescribeImages",
+                "ecr:BatchGetImage"
             ],
             "Resource": "*"
         }
