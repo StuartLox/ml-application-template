@@ -1,74 +1,151 @@
-
 #!/usr/bin/env python
 
-# This file implements the scoring service shell. You don't necessarily need to modify it for various
-# algorithms. It starts nginx and gunicorn with the correct configurations and then simply waits until
-# gunicorn exits.
-#
-# The flask server is specified to be the app object in wsgi.py
-#
-# We set the following parameters:
-#
-# Parameter                Environment Variable              Default Value
-# ---------                --------------------              -------------
-# number of workers        MODEL_SERVER_WORKERS              the number of CPU cores
-# timeout                  MODEL_SERVER_TIMEOUT              60 seconds
-
-from __future__ import print_function
-import multiprocessing
 import os
-import signal
-import subprocess
 import sys
+import traceback
 
-cpu_count = multiprocessing.cpu_count()
+import numpy as np
+import pandas as pd
+import tensorflow as tf
 
-model_server_timeout = os.environ.get('MODEL_SERVER_TIMEOUT', 60)
-model_server_workers = int(os.environ.get('MODEL_SERVER_WORKERS', cpu_count))
+from keras.layers import Dropout, Dense
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.models import Sequential
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import GridSearchCV
+
+# Optional
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+# These are the paths to where SageMaker mounts interesting things in your
+# container.
+prefix = '/opt/ml/'
+
+input_path = prefix + 'input/data/training/churn.csv'
+output_path = os.path.join(prefix, 'output')
+model_path = os.path.join(prefix, 'model')
+
+# This algorithm has a single channel of input data called 'training'.
+# Since we run in File mode, the input files are copied to the directory
+# specified here.
+channel_name = 'training'
+training_path = os.path.join(input_path, channel_name)
 
 
-def sigterm_handler(nginx_pid, gunicorn_pid):
+# Process and prepare the data
+def data_process(dataset):
+    # Impute missing data for Bare Nuclei field.
+    dataset.BareNuclei = (dataset.BareNuclei
+                            .replace('?', df[df.BareNuclei !='?']
+                            .BareNuclei.median()))
+
+    # Set features and class variables.
+    dataset = dataset.values
+    X = dataset[:, 1:-1]
+    y = dataset[:, -1]
+
+    # One hot encode class variable.
+    encoder = LabelEncoder()
+    dummy_y = encoder.fit_transform(y)
+
+    # # Feature Scaling
+    # sc = StandardScaler()
+    # X = sc.fit_transform(X)
+
+    return X, dummy_y
+
+
+# Building the ANN
+def build_model(optimizer):
+    # Initialize ANN
+    model = Sequential()
+
+    # First hidden layer with 10% dropout
+    model.add(Dense(
+        activation="relu",
+        input_dim=16,
+        units=8,
+        kernel_initializer="uniform"))
+    model.add(Dropout(rate=0.1))
+
+    # The second hidden layer with 10% dropout
+    model.add(Dense(
+        activation="relu",
+        units=8,
+        kernel_initializer="uniform"))
+    model.add(Dropout(rate=0.1))
+
+    # Adding the output layer
+    model.add(Dense(
+        activation="sigmoid",
+        units=1,
+        kernel_initializer="uniform"))
+
+    # Compiling the ANN
+    model.compile(
+        optimizer=optimizer,
+        loss='binary_crossentropy',
+        metrics=['accuracy']
+    )
+    return model
+
+
+def generate_model(X_train, y_train):
+    # Build classifier using grid search
+    model = KerasClassifier(build_fn=build_classifier)
+
+    # Create a dict of hyperparameters to optimize
+    parameters = {
+        # Tune batch size, epoch, optimizer
+        'batch_size': [25, 32],
+        'nb_epoch': [100, 500],
+        'optimizer': ['adam', 'rmsprop']
+    }
+
+    # Implement GridSearch
+    grid_search = GridSearchCV(
+        estimator=classifier,
+        param_grid=parameters,
+        scoring='accuracy',
+        cv=2
+    )
+
+    # Fit gridsearch to training set
+    optimized_classifier = grid_search.fit(
+        X_train,
+        y_train
+    )
+
+    return optimized_classifier
+
+
+def train():
+    print('Starting the training.')
     try:
-        os.kill(nginx_pid, signal.SIGQUIT)
-    except OSError:
-        pass
-    try:
-        os.kill(gunicorn_pid, signal.SIGTERM)
-    except OSError:
-        pass
-
-    sys.exit(0)
-
-
-def start_server():
-    print('Starting the inference server with {} workers.'.format(model_server_workers))
-
-
-    # link the log streams to stdout/err so they will be logged to the container logs
-    subprocess.check_call(['ln', '-sf', '/dev/stdout', '/var/log/nginx/access.log'])
-    subprocess.check_call(['ln', '-sf', '/dev/stderr', '/var/log/nginx/error.log'])
-
-    nginx = subprocess.Popen(['nginx', '-c', '/opt/program/nginx.conf'])
-    gunicorn = subprocess.Popen(['gunicorn',
-                                 '--timeout', str(model_server_timeout),
-                                 '-k', 'gevent',
-                                 '-b', 'unix:/tmp/gunicorn.sock',
-                                 '-w', str(model_server_workers),
-                                 'wsgi:app'])
-
-    signal.signal(signal.SIGTERM, lambda a, b: sigterm_handler(nginx.pid, gunicorn.pid))
-
-    # If either subprocess exits, so do we.
-    pids = set([nginx.pid, gunicorn.pid])
-    while True:
-        pid, _ = os.wait()
-        if pid in pids:
-            break
-
-    sigterm_handler(nginx.pid, gunicorn.pid)
-    print('Inference server exiting')
+        raw_data = pd.read_csv(input_path)
+        X, y = data_process(raw_data)
+        optimized_classifier = generate_model(X, y)
+        optimized_classifier.best_estimator_.model.save(
+            os.path.join(model_path, 'ann-churn.h5'))
+        print('Training is complete.')
+    except Exception as e:
+        # Write out an error file. This will be returned as the failure
+        # Reason in the DescribeTrainingJob result.
+        trc = traceback.format_exc()
+        with open(os.path.join(output_path, 'failure'), 'w') as s:
+            s.write('Exception during training: ' + str(e) + '\n' + trc)
+        # Printing this causes the exception to be in the training job logs
+        print(
+            'Exception during training: ' + str(e) + '\n' + trc,
+            file=sys.stderr)
+        # A non-zero exit code causes the training job to be marked as Failed.
+        sys.exit(255)
 
 
-# The main routine just invokes the start function.
 if __name__ == '__main__':
-    start_server()
+    train()
+
+    # A zero exit code causes the job to be marked a Succeeded.
+    sys.exit(0)

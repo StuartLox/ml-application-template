@@ -49,24 +49,12 @@ class ScoringService(object):
             return clf.predict(input)
 
 
-def impute_missing_data(df):
-    df.BareNuclei = (df.BareNuclei
-                     .replace('?', df[df.BareNuclei !='?']
-                     .BareNuclei.median())
-                    )
-    return df
-
 def transform_data(dataset):
-    df = impute_missing_data(df)
+    dataset = impute_missing_data(dataset)
     # Set features and class variables.
-    df = df.values
-    X = df[:, 1:-1]
-    y = df[:, -1]
-
-    # Encoding categorical variables
-    # One hot encode class variable.
-    encoder = LabelEncoder()
-    dummy_y = encoder.fit_transform(y)
+    dataset = dataset.values
+    X = dataset[:, 1:-1]
+    y = dataset[:, -1]
 
     # Feature Scaling
     sc = StandardScaler()
