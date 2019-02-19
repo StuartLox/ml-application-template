@@ -49,19 +49,24 @@ class ScoringService(object):
             return clf.predict(input)
 
 
-def transform_data(dataset):
-    for col in dataset.columns:
-        if col not in ['user_id', 'domain_name']:
-            col_mean = np.nanmean(dataset[col], axis=0)
-            dataset[col].fillna(col_mean, inplace=True)
+def impute_missing_data(df):
+    df.BareNuclei = (df.BareNuclei
+                     .replace('?', df[df.BareNuclei !='?']
+                     .BareNuclei.median())
+                    )
+    return df
 
-    # Replace with average age
-    X = dataset.iloc[:, 1:len(dataset.columns)-1].values
+def transform_data(dataset):
+    df = impute_missing_data(df)
+    # Set features and class variables.
+    df = df.values
+    X = df[:, 1:-1]
+    y = df[:, -1]
 
     # Encoding categorical variables
-    # The number of 15 is given for the specific data worked with
-    labelencoder_X_1 = LabelEncoder()
-    X[:, 15] = labelencoder_X_1.fit_transform(X[:, 15])
+    # One hot encode class variable.
+    encoder = LabelEncoder()
+    dummy_y = encoder.fit_transform(y)
 
     # Feature Scaling
     sc = StandardScaler()
