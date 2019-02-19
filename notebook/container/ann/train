@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/ python3
 
 import os
 import sys
@@ -34,13 +34,7 @@ channel_name = 'training'
 training_path = os.path.join(input_path, channel_name)
 
 
-# Process and prepare the data
 def data_process(dataset):
-    # Impute missing data for Bare Nuclei field.
-    dataset.BareNuclei = (dataset.BareNuclei
-                            .replace('?', df[df.BareNuclei !='?']
-                            .BareNuclei.median()))
-
     # Set features and class variables.
     dataset = dataset.values
     X = dataset[:, 1:-1]
@@ -65,7 +59,7 @@ def build_model(optimizer):
     # First hidden layer with 10% dropout
     model.add(Dense(
         activation="relu",
-        input_dim=16,
+        input_dim=9,
         units=8,
         kernel_initializer="uniform"))
     model.add(Dropout(rate=0.1))
@@ -94,7 +88,7 @@ def build_model(optimizer):
 
 def generate_model(X_train, y_train):
     # Build classifier using grid search
-    model = KerasClassifier(build_fn=build_classifier)
+    model = KerasClassifier(build_fn=build_model)
 
     # Create a dict of hyperparameters to optimize
     parameters = {
@@ -106,7 +100,7 @@ def generate_model(X_train, y_train):
 
     # Implement GridSearch
     grid_search = GridSearchCV(
-        estimator=classifier,
+        estimator=model,
         param_grid=parameters,
         scoring='accuracy',
         cv=2
