@@ -50,11 +50,9 @@ class ScoringService(object):
 
 
 def transform_data(dataset):
-    dataset = [map(int, s.replace('?', np.nan)) for s in strs]
     # Set features and class variables.
-    # dataset = dataset.values
+    dataset = dataset.values
     X = dataset[:, 1:-1]
-    y = dataset[:, -1]
 
     # Feature Scaling
     sc = StandardScaler()
@@ -96,8 +94,7 @@ def transformation():
     # Convert from CSV to pandas
     if flask.request.content_type == 'text/csv':
         data = flask.request.data.decode('utf-8')
-        X = transform_data(data)
-        s = StringIO.StringIO(X)
+        s = StringIO(data)
         data = pd.read_csv(s, header=None)
     else:
         return flask.Response(
@@ -107,11 +104,12 @@ def transformation():
 
     print('Invoked with {} records'.format(data.shape[0]))
 
+    data = transform_data(data)
     # Do the prediction
     predictions = ScoringService.predict(data)
 
     # Convert from numpy back to CSV
-    out = StringIO.StringIO()
+    out = StringIO()
     pd.DataFrame(predictions).to_csv(out, header=False, index=False)
     result = out.getvalue()
 
