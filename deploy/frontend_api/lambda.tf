@@ -5,7 +5,6 @@ data "archive_file" "lambda" {
 }
 
 resource "aws_lambda_function" "lambda" {
-  provider         = "aws.sys_admin"
   filename         = "${data.archive_file.lambda.output_path}"
   function_name    = "${var.service_name}"
   role             = "${aws_iam_role.lambda_role.arn}"

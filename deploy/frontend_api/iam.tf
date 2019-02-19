@@ -1,5 +1,4 @@
 resource "aws_iam_role_policy" "lambda_role_policy" {
-  provider  = "aws.iam_admin"
   name      = "lambda"
   role      = "${aws_iam_role.lambda_role.id}"
   policy    = <<EOF
@@ -45,7 +44,6 @@ EOF
 }
 
 resource "aws_iam_role" "lambda_role" {
-  provider = "aws.iam_admin"
   name     = "${var.service_name}"
 
   assume_role_policy = <<EOF
