@@ -19,9 +19,7 @@ resource "aws_iam_role_policy" "sagemaker_role_policy" {
             "Sid": "",
             "Effect": "Allow",
             "Action": [
-                "logs:PutLogEvents",
-                "logs:CreateLogStream",
-                "logs:CreateLogGroup"
+                "logs:*"
             ],
             "Resource": "arn:aws:logs:*:*:*"
         },
@@ -42,7 +40,8 @@ resource "aws_iam_role_policy" "sagemaker_role_policy" {
             "Effect": "Allow",
             "Action": [
                 "iam:GetRole",
-                "iam:GetRolePolicy"
+                "iam:GetRolePolicy",
+                "iam:PassRole"
             ],
             "Resource": [
                 "*"
