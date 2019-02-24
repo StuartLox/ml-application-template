@@ -6,7 +6,7 @@
 * Deploying custom Scikit Learn model inside Docker container.   
 
 ## ML Application Lifecycle
-[![Serverless Deployment ML](Serverless_Deployment_ML.png)](MLApplicationLifecycle.png)
+[![MLApplicationLifecycle.png](MLApplicationLifecycle.png)](MLApplicationLifecycle.png)
 
 
 ## Data Driven Architecture
