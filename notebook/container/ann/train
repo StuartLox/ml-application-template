@@ -2,6 +2,7 @@
 
 import os
 import sys
+import time
 import traceback
 
 import numpy as np
@@ -134,13 +135,14 @@ def model_metrics(grid_result):
     region = 'ap-southeast-2'
     model_name = 'ANN-BreastCancer'
     CWMetrics = CWEvalMetrics(region=region, model_name=model_name)
-    hyperparameters = {'batch_size': 100, 'epochs': 20, 'learning_rate': 0.1,'momentum': 0.9,'log_interval': 100, 'optimizer': 'adam'}
+    hyperparameters = {'batch_size': 25, 'epochs': 100, 'learning_rate': 0.1,'momentum': 0.9,'log_interval': 100, 'optimizer': 'adam'}
     for i, mean_test in enumerate(grid_result.cv_results_['mean_test_score']):
-        CWMetrics.CW_eval(model_name, is_training=True, 
+        CWMetrics.CW_eval(model_name,
                           AccuracyTest=mean_test*100, 
                           AccuracyTrain=grid_result.cv_results_['mean_train_score'][i]*100, 
                           hyperparameters=hyperparameters)
-    CWMetrics.create_dashboard("ANN-Dash", hyperparameters=hyperparameters)
+        time.sleep(10)
+    CWMetrics.create_dashboard("ANN-Dash-2", hyperparameters=hyperparameters)
 
 def train():
     print('Starting the training.')

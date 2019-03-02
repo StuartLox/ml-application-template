@@ -15,13 +15,13 @@ class CWEvalMetrics:
     # A function to send the training evaluation metrics
     # the metric_type parameters will determine whether the data sent is for training or validation.
 
-    def CW_eval(self, model_name, is_training,  **kwargs):
+    def CW_eval(self, model_name, **kwargs):
         # collecting the loss and accuracy values
         loss = kwargs.get('Loss', 0)
         train_accuracy = kwargs.get('AccuracyTrain')
         test_accuracy = kwargs.get('AccuracyTest')
-        print("train_accuracy", train_accuracy)
         print("")
+        print("train_accuracy", train_accuracy)
         print("test_accuracy", test_accuracy)
 
         # Collecting the hyperparameters to be used as the metrics dimensions
