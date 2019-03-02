@@ -31,7 +31,7 @@ jobs:
             # Find a cache corresponding to this specific package.json checksum
             # when this file is changed, this key will fail
             - requirements-{{ checksum "frontend_api/src/requirements.txt" }}
-      - run: cd frontend_api/src && pip install -r requirements.txt -t .
+      - run: cd frontend_api/src && pip3 install -r requirements.txt -t .
       - run: cd frontend_api/src/tests && python -m unittest discover
       - save_cache:
           key: requirements-{{ checksum "requirements.txt" }}
