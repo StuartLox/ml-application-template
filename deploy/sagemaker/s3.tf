@@ -14,4 +14,5 @@ resource "aws_s3_bucket_object" "object" {
   bucket   = "${aws_s3_bucket.ml_sagemaker_bucket.id}"
   key      = "notebook/notebook.zip"
   source   = "${path.module}/../notebook.zip"
+  etag   = "${md5(file("${path.module}/../notebook.zip"))}"
 }
