@@ -5,8 +5,8 @@ resource "aws_sagemaker_notebook_instance" "notebook" {
   lifecycle_config_name = "cf-cicd-dev-sagemaker-lifecycle"
 }
 
-resource "null_resource" "build_image" {
-  provisioner "local-exec" {
-    command = "cd ../notebook/container; echo Add Permissions; chmod u+x; echo Build Image; ./build_image.sh; sh ./build_image.sh"
-  }
-}
+# resource "null_resource" "build_image" {
+#   provisioner "local-exec" {
+#     command = "cd ../notebook/container; echo Add Permissions; chmod u+x; echo Build Image; ./build_image.sh; sh ./build_image.sh"
+#   }
+# }
