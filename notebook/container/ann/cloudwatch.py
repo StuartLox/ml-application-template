@@ -2,7 +2,6 @@ import logging
 import json
 import time
 import boto3
-model_name = ""
 
 region = "ap-southeast-2"
 client = boto3.client('cloudwatch', region_name=region)
@@ -19,13 +18,11 @@ class CWEvalMetrics:
     def CW_eval(self, model_name, is_training,  **kwargs):
         # collecting the loss and accuracy values
         loss = kwargs.get('Loss', 0)
-        accuracy = kwargs.get('Accuracy')
-
-        # determine if the passed values are for training or validation
-        if is_training:
-            metric_type = 'Training'
-        else:
-            metric_type = 'Validation'
+        train_accuracy = kwargs.get('AccuracyTrain')
+        test_accuracy = kwargs.get('AccuracyTest')
+        print("train_accuracy", train_accuracy)
+        print("")
+        print("test_accuracy", test_accuracy)
 
         # Collecting the hyperparameters to be used as the metrics dimensions
         hyperparameter = kwargs.get('hyperparameters')
@@ -36,26 +33,26 @@ class CWEvalMetrics:
             Namespace='/aws/sagemaker/' + model_name,
             MetricData=[
                 {
-                    'MetricName': metric_type + ' Accuracy',
+                    'MetricName': 'Training Accuracy',
                     'Dimensions': [
                   { 'Name': 'Model Name', 'Value': model_name },
                   { 'Name': 'Learning Rate', 'Value': learning_rate },
                   { 'Name': 'Optimizer', 'Value': optimizer },
                   { 'Name': 'Epochs', 'Value': epochs},
                     ],
-                    'Value': accuracy,
+                    'Value': train_accuracy,
                     'Unit': "Percent",
                     'StorageResolution': 1
                 },
                 {
-                    'MetricName': metric_type + ' Loss',
+                    'MetricName': 'Testing Accuracy',
                     'Dimensions': [
                   { 'Name': 'Model Name', 'Value': model_name },
                   { 'Name': 'Learning Rate', 'Value': learning_rate },
                   { 'Name': 'Optimizer', 'Value': optimizer },
                   { 'Name': 'Epochs', 'Value': epochs},
                     ],
-                    'Value': loss,
+                    'Value': test_accuracy,
                     'Unit': "Percent",
                     'StorageResolution': 1
                 },
@@ -72,7 +69,7 @@ class CWEvalMetrics:
         lr = str(hyperparameter.get('learning_rate'))
 
         # The dashboard body has the property of the dashboard in JSON format
-        dashboard_body = '{"widgets":[{"type":"metric","x":0,"y":3,"width":18,"height":9,"properties":{"view":"timeSeries","stacked":false,"metrics":[["/aws/sagemaker/' + self.model_name + '","Training Loss","Model Name","' + self.model_name + '","Epochs","' + epochs + '","Optimizer","' + optimizer + '","Learning Rate","' + lr + '"],[".","Training Accuracy",".",".",".",".",".",".",".","."],[".","Validation Accuracy",".",".",".",".",".",".",".","."]],"region":"' + self.region + '","period":30}},{"type":"metric","x":0,"y":0,"width":18,"height":3,"properties":{"view":"singleValue","metrics":[["/aws/sagemaker/' + self.model_name + '","Training Loss","Model Name","' + self.model_name + '","Epochs","' + epochs + '","Optimizer","' + optimizer + '","Learning Rate","' + lr + '"],[".","Training Accuracy",".",".",".",".",".",".",".","."],[".","Validation Accuracy",".",".",".",".",".",".",".","."]],"region":"' + self.region + '","period":30}}]}'
-
+        dashboard_body = '{"widgets":[{"type":"metric","x":0,"y":3,"width":18,"height":9,"properties":{"view":"timeSeries","stacked":false,"metrics":[["/aws/sagemaker/' + self.model_name + '","Training Accuracy","Model Name","' + self.model_name + '","Epochs","' + epochs + '","Optimizer","' + optimizer + '","Learning Rate","' + lr + '"],[".","Testing Accuracy",".",".",".",".",".",".",".","."]],"region":"' + self.region + '","period":30}},{"type":"metric","x":0,"y":0,"width":18,"height":3,"properties":{"view":"singleValue","metrics":[["/aws/sagemaker/' + self.model_name + '","Training Loss","Model Name","' + self.model_name + '","Epochs","' + epochs + '","Optimizer","' + optimizer + '","Learning Rate","' + lr + '"],[".","Training Accuracy",".",".",".",".",".",".",".","."],[".","Testing Accuracy",".",".",".",".",".",".",".","."]],"region":"' + self.region + '","period":30}}]}'
+        print(dashboard_body)
         response = client.put_dashboard(DashboardName=db_name, DashboardBody=dashboard_body)
         return response

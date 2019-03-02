@@ -24,6 +24,7 @@ RUN pip3 install gevent
 RUN pip3 install gunicorn
 RUN pip3 install tensorflow
 RUN pip3 install keras
+RUN pip3 install boto3
 RUN rm -rf /root/.cache
 
 # Env Variables
