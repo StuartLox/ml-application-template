@@ -16,6 +16,9 @@ jobs:
     working_directory: ~/ml_application_template
     docker:
       - image: stuartloxton/aws-terraform-docker:latest
+        auth:
+            username: $DOCKERHUB_USERNAME
+            password: $DOCKERHUB_PASSWORD
     environment:
       ENV: dev
  
