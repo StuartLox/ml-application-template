@@ -141,7 +141,7 @@ def model_metrics(grid_result):
                           AccuracyTest=mean_test*100, 
                           AccuracyTrain=grid_result.cv_results_['mean_train_score'][i]*100, 
                           hyperparameters=hyperparameters)
-        time.sleep(10)
+        time.sleep(5)
     CWMetrics.create_dashboard("ANN-Dash-2", hyperparameters=hyperparameters)
 
 def train():
