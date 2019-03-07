@@ -60,12 +60,8 @@ jobs:
             chmod +x predict.sh;
             chmod +x serve_local.sh;
             sh serve_local.sh ann-churn:latest;
-      - run:
-          command: >
-            cd notebook/container/local_test;
             sh predict.sh test_dir/input/data/training/churn.csv;
-
-
+     
       - persist_to_workspace:
           root: .
           paths:
