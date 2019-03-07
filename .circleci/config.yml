@@ -55,7 +55,7 @@ jobs:
           docker build -t "ann-churn" .;
       - run:
           background: true
-          command: |
+          command: >
             cd notebook/container/local_test;
             chmod +x predict.sh;
             chmod +x serve_local.sh;
