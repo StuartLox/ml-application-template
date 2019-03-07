@@ -10,7 +10,7 @@ module "sagemaker" {
   source = "./sagemaker"
 }
 
-module "fronend_api" {
+module "frontend_api" {
   source = "./frontend_api"
-  endpoint_name = "${module.output}"
+  endpoint_name = "ann-model"
 }
