@@ -56,7 +56,7 @@ jobs:
       - run:
           background: true
           command: >
-            cd notebook/container;
+            # cd notebook/container;
             ls
             # chmod +x predict.sh;
             # chmod +x serve_local.sh;
