@@ -12,5 +12,5 @@ module "sagemaker" {
 
 module "frontend_api" {
   source        = "./frontend_api"
-  endpoint_name = "ann-model"
+  endpoint_name = "ann-churn-2019-03-07-02-41-44-641"
 }
