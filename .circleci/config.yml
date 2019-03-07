@@ -12,7 +12,7 @@ deploy-defaults: &deployDefaults
     - run: cd deploy && terragrunt apply -auto-approve
 version: 2
 jobs:
-  build_and_test:
+  build_and_test_api:
     working_directory: ~/ml_application_template
     docker:
       - image: circleci/python:3.6.1
@@ -38,6 +38,27 @@ jobs:
           root: .
           paths:
             - frontend_api/src
+jobs:
+  build_and_test_models:
+    working_directory: ~/ml_application_template
+    docker:
+      - image: circleci/python:3.6.1
+    environment:
+      ENV: dev
+ 
+    steps:
+      - checkout
+      - setup_remote_docker: 
+         docker_layer_caching: true 
+      - run: docker build -t "ann-churn" .
+      - run: >
+          cd notebook/container/local_test;
+          sh serve.sh ann-churn:latest;
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - notebook/src
 
   deploy_dev:
     <<: *deployDefaults
@@ -51,11 +72,14 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build_and_test:
+      - build_and_test_api:
+          context: personal_account
+      - build_and_test_model:
           context: personal_account
       - deploy_dev:
           requires:
-            - build_and_test
+            - build_and_test_api
+            - build_and_test_model
           context: personal_account
           filters:
             branches:
