@@ -12,4 +12,5 @@ module "sagemaker" {
 
 module "fronend_api" {
   source = "./frontend_api"
+  endpoint_name = "${module.output}"
 }

@@ -15,10 +15,11 @@ resource "aws_lambda_function" "lambda" {
   timeout          = "120"
   memory_size      = "1024"
 
-environment {
+  environment {
     variables = {
       ENV                     = "${var.environment}"
       S3_CONFIG_BUCKET        = "pocketbook-transaction-data"
+      ENDPOINT_NAME           = "${var.endpoint_name}"          
     }
   }
 }
