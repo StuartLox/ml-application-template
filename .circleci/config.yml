@@ -38,7 +38,7 @@ jobs:
           root: .
           paths:
             - frontend_api/src
-jobs:
+
   build_and_test_models:
     working_directory: ~/ml_application_template
     docker:
