@@ -55,6 +55,7 @@ jobs:
           docker build -t "ann-churn" .;
       - run: >
           cd notebook/container/local_test;
+          chmod +x serve.sh;
           sh serve.sh ann-churn:latest;
 
       - persist_to_workspace:
