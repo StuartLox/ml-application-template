@@ -56,12 +56,13 @@ jobs:
       - run:
           background: true
           command: >
-            cd ~/ml_application_template/notebook/container/local_test;
-            chmod +x predict.sh;
-            chmod +x serve_local.sh;
-            sh serve_local.sh ann-churn:latest;
-            sh predict.sh test_dir/input/data/training/churn.csv;
-            kill $(lsof -t -i:8080);
+            cd notebook/container;
+            ls
+            # chmod +x predict.sh;
+            # chmod +x serve_local.sh;
+            # sh serve_local.sh ann-churn:latest;
+            # sh predict.sh test_dir/input/data/training/churn.csv;
+            # kill $(lsof -t -i:8080);
 
       - persist_to_workspace:
           root: .
