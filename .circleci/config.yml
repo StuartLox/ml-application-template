@@ -39,7 +39,7 @@ jobs:
           paths:
             - frontend_api/src
 
-  build_and_test_models:
+  build_and_test_model:
     working_directory: ~/ml_application_template
     docker:
       - image: circleci/python:3.6.1
