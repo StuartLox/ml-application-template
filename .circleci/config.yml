@@ -60,6 +60,7 @@ jobs:
             chmod +x predict.sh;
             chmod +x serve_local.sh;
             sh serve_local.sh ann-churn:latest;
+          command: >
             sh predict.sh test_dir/input/data/training/churn.csv;
 
 
