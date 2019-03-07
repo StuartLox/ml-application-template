@@ -19,7 +19,8 @@ def predict():
     if flask.request.content_type == 'text/csv':
         data = request.data.decode('utf-8')
         body = StringIO(data)
-        get_prediction(body)
+        data = get_prediction(body)
+        return jsonify(data)
     
     else:
         jsonify(message)
@@ -41,11 +42,10 @@ def get_prediction(body):
     result = json.loads(response['Body'].read().decode())
     logging.info(result)
     if result > 0.5:
-        data = {"Type": "Benine", "Probability" : result}
-        return  jsonify(data)
+        return {"Type": "Benine", "Probability" : result}
+
     elif result < 0.5:
-        data = {"Type": "Malignant", "Probability" : result}
-        return jsonify(data)
+        return {"Type": "Malignant", "Probability" : result}
 
 
 def handler(event, context):
