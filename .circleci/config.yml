@@ -55,8 +55,12 @@ jobs:
           docker build -t "ann-churn" .;
       - run: >
           cd notebook/container/local_test;
-          chmod +x serve.sh;
-          sh serve.sh ann-churn:latest;
+          chmod +x serve_local.sh;
+          sh serve_local.sh ann-churn:latest;
+      - run: >
+          cd notebook/container/local_test;
+          chmod +x predict.sh;
+          sh predict.sh test_dir/input/data/training/churn.csv;
 
       - persist_to_workspace:
           root: .
