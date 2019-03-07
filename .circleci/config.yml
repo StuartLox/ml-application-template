@@ -51,7 +51,7 @@ jobs:
       - setup_remote_docker: 
          docker_layer_caching: true 
       - run: > 
-          cd sagemaker/container;
+          cd notebook/container;
           docker build -t "ann-churn" .;
       - run: >
           cd notebook/container/local_test;
