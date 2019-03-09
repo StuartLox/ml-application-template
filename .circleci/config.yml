@@ -53,6 +53,8 @@ jobs:
       - run: > 
           cd notebook/container;
           docker build -t "ann-churn" .;
+          ID="$(docker images | grep 'ann-churn' | head -n 1 | awk '{print $3}')"
+          docker tag "$ID" ann-churn:latest
       - run:
           command: >
             cd notebook/container/local_test;
