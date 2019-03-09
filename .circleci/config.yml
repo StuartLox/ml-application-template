@@ -53,7 +53,7 @@ jobs:
       - run: > 
           cd notebook/container;
           docker build -t "ann-churn" .;
-          docker run -p 8080:8080 ann-churn
+          docker run -p 8080:8080 ann-churn:latest
       - run:
           command: >
             cd notebook/container/local_test;
