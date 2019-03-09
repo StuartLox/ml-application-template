@@ -15,7 +15,6 @@ RUN apt-get -y update && apt-get install -y --no-install-recommends \
 
 # Install all of the packages
 RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py
-RUN pip3 --no-cache-dir install --upgrade awscli
 RUN pip3 install numpy
 RUN pip3 install scipy
 RUN pip3 install scikit-learn
