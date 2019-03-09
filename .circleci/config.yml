@@ -58,7 +58,7 @@ jobs:
           command: >
             cd notebook/container/local_test;
             chmod +x serve_local.sh;
-            sh serve_local.sh ann-churn:latest;
+            bash serve_local.sh ann-churn:latest;
       - run:
           shell: /bin/sh
           command: |
