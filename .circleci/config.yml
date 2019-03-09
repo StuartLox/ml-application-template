@@ -67,6 +67,7 @@ jobs:
             cd notebook/container/local_test;
             chmod +x predict.sh;
             sh predict.sh test_dir/input/data/training/churn.csv;
+            :
       - persist_to_workspace:
           root: .
           paths:
