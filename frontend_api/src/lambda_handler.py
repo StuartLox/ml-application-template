@@ -16,7 +16,7 @@ app = Flask(__name__)
 @app.route("/prediction", methods=["POST"])
 def predict():
     method = request.environ['awsgi.event']['httpMethod']
-    logging.info(f"Content-Type: {flask.request.content_type}")
+    print(f"Content-Type: {flask.request.content_type}")
     if flask.request.content_type == 'text/csv':
         data = request.data.decode('utf-8')
         body = StringIO(data)
