@@ -23,13 +23,13 @@ def predict():
         return jsonify(data)
     
     else:
-        jsonify(message)
+        jsonify(request.environ['awsgi.event']['body'])
 
 @app.route("/train", methods=["POST"])
 def train():
     method = request.environ['awsgi.event']['httpsMethod']
     if method == "POST":
-        return jsonify(message)
+        return jsonify(message=request.environ['awsgi.event']['body'])
 
 
 def get_prediction(body):
