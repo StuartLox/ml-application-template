@@ -57,17 +57,13 @@ jobs:
           background: true
           command: >
             cd notebook/container/local_test;
-            chmod +x predict.sh;
             chmod +x serve_local.sh;
             sh serve_local.sh ann-churn:latest;
       - run:
           shell: /bin/sh
           command: |
-              wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:8080/invocations
-              :
-      - run:
-          command: sh predict.sh test_dir/input/data/training/churn.csv;
-     
+              chmod +x predict.sh;
+              sh predict.sh test_dir/input/data/training/churn.csv;
       - persist_to_workspace:
           root: .
           paths:

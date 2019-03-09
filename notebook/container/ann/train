@@ -150,7 +150,7 @@ def train():
         raw_data = set_dataframe()
         X, y = data_process(raw_data)
         optimized_classifier = generate_model(X, y)
-        model_metrics(optimized_classifier)
+        # model_metrics(optimized_classifier)
         optimized_classifier.best_estimator_.model.save(
             os.path.join(model_path, 'ann-churn.h5'))
         print('Training is complete.')
