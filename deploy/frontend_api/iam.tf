@@ -37,6 +37,14 @@ resource "aws_iam_role_policy" "lambda_role_policy" {
                 "s3:ListBucket"
             ],
             "Resource": "arn:aws:s3:::*"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:*"
+            ],
+            "Resource": "*"
         }
     ]
 }
