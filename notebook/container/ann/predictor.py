@@ -55,8 +55,8 @@ def transform_data(dataset):
     X = dataset[:, 1:-1]
 
     # Feature Scaling
-    sc = StandardScaler()
-    X = sc.fit_transform(X)
+    # sc = StandardScaler()
+    # X = sc.fit_transform(X)
 
     return pd.DataFrame(X)
 
