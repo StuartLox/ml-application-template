@@ -1,6 +1,6 @@
 # Resolve Domain Name with API gateway.
 resource "aws_api_gateway_domain_name" "frontend_api" {
-  domain_name              = "api.stuartloxton.com"
+  domain_name              = "${var.domain_name}"
   regional_certificate_arn = "${var.regional_certificate_arn}"
 
   endpoint_configuration {
