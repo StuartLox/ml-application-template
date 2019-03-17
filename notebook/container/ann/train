@@ -65,7 +65,7 @@ def data_process(dataset):
     # sc = StandardScaler()
     # X = sc.fit_transform(X)
 
-    return X, dummy_y
+    return X, y
 
 
 # Building the ANN
@@ -128,7 +128,7 @@ def generate_model(X_train, y_train):
         X_train,
         y_train
     )
-
+    
     return optimized_classifier
 
 def model_metrics(grid_result):
@@ -144,19 +144,20 @@ def model_metrics(grid_result):
         time.sleep(5)
     CWMetrics.create_dashboard("ANN-Dash-2", hyperparameters=hyperparameters)
 
-def train():
-    print('Starting the training.')
-    try:
-        raw_data = set_dataframe()
-        X, y = data_process(raw_data)
-        optimized_classifier = generate_model(X, y)
-        # model_metrics(optimized_classifier)
-        optimized_classifier.best_estimator_.model.save(
-            os.path.join(model_path, 'ann-churn.h5'))
-        print('Training is complete.')
-    except Exception as e:
-        # Write out an error file. This will be returned as the failure
-        # Reason in the DescribeTrainingJob result.
+    def train():
+        print('Starting the training.')
+        try:
+            raw_data = set_dataframe()
+            X, y = data_process(raw_data)
+            print(X)
+            optimized_classifier = generate_model(X, y)
+            # model_metrics(optimized_classifier)
+            optimized_classifier.best_estimator_.model.save(
+                os.path.join(model_path, 'ann-churn.h5'))
+            print('Training is complete.')
+        except Exception as e:
+            # Write out an error file. This will be returned as the failure
+            # Reason in the DescribeTrainingJob result.
         trc = traceback.format_exc()
         with open(os.path.join(output_path, 'failure'), 'w') as s:
             s.write('Exception during training: ' + str(e) + '\n' + trc)

@@ -13,7 +13,7 @@ from flask import (
 )
 
 app = Flask(__name__)
-
+logger.setLevel(logging.INFO)
 
 @app.route("/prediction", methods=["POST"])
 def predict():

@@ -24,6 +24,3 @@
 
 ## Data Driven Architecture
 [![Serverless Deployment ML](Serverless_Deployment_ML.png)](Serverless_Deployment_ML.png)
-
-## To Do
-* Should the api be broken down into two separate endpoints. One for training and one for inference or should they be put together?
