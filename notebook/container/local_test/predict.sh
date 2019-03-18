@@ -10,3 +10,5 @@ curl --connect-timeout 5 \
      --data-binary @${payload} \
      -H "Content-Type: ${content}" \
      -v http://localhost:8080/invocations
+
+curl -v http://localhost:8080/ping
