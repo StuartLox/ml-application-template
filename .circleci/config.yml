@@ -10,6 +10,12 @@ deploy-defaults: &deployDefaults
     - attach_workspace:
         at: ~/ml_application_template
     - run: cd deploy && terragrunt apply -auto-approve
+    - setup_remote_docker:  
+          docker_layer_caching: true
+    - run: >
+       cd notebook/container;
+       chmod +x build_image.sh;
+       sh build_image.sh;
 version: 2
 jobs:
   build_and_test_api:
