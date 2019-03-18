@@ -3,6 +3,7 @@
 import os
 from io import StringIO
 import flask
+import pickle
 
 import tensorflow as tf
 import numpy as np
@@ -22,7 +23,9 @@ model_path = os.path.join(prefix, 'model')
 # It has a predict function that does a prediction based on the model and the
 # input data.
 class ScoringService(object):
-    model = None
+    def __init__(self):
+        self.model = None
+        self.scalar = None
 
     @classmethod
     def get_model(cls):
@@ -30,11 +33,13 @@ class ScoringService(object):
         Get the model object for this instance,
         loading it if it's not already loaded.
         """
+        cls = cls()
         if cls.model is None:
             cls.model = load_model(
                 os.path.join(model_path, 'ann-churn.h5'))
         return cls.model
 
+    
     @classmethod
     def predict(cls, input):
         """For the input, do the predictions and return them.
@@ -55,8 +60,10 @@ def transform_data(dataset):
     X = dataset[:, 1:-1]
 
     # Feature Scaling
-    # sc = StandardScaler()
-    # X = sc.fit_transform(X)
+    with open("{0}/scalar.pickle".format(model_path), 'rb') as scalar:
+        sc = pickle.load(scalar)
+    
+    X = sc.transform(X)
 
     return pd.DataFrame(X)
 
