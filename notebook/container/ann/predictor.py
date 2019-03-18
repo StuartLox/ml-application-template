@@ -23,9 +23,8 @@ model_path = os.path.join(prefix, 'model')
 # It has a predict function that does a prediction based on the model and the
 # input data.
 class ScoringService(object):
-    def __init__(self):
-        self.model = None
-        self.scalar = None
+    model = None
+    scalar = None
 
     @classmethod
     def get_model(cls):
@@ -33,13 +32,24 @@ class ScoringService(object):
         Get the model object for this instance,
         loading it if it's not already loaded.
         """
-        cls = cls()
         if cls.model is None:
             cls.model = load_model(
                 os.path.join(model_path, 'ann-churn.h5'))
         return cls.model
 
-    
+    # @classmethod
+    # def get_scalar(cls):
+    #     """
+    #     Get the model object for this instance,
+    #     loading it if it's not already loaded.
+    #     """
+    #     if cls.scalar is None:
+    #          # Feature Scaling
+    #         with open("{0}/scalar.pickle".format(model_path), 'rb') as scalar:
+    #             cls.scalar = pickle.load(scalar)
+    #         return cls.scalar
+
+
     @classmethod
     def predict(cls, input):
         """For the input, do the predictions and return them.
@@ -58,11 +68,9 @@ def transform_data(dataset):
     # Set features and class variables.
     dataset = dataset.values
     X = dataset[:, 1:-1]
-
-    # Feature Scaling
-    with open("{0}/scalar.pickle".format(model_path), 'rb') as scalar:
-        sc = pickle.load(scalar)
     
+    with open("{0}/scalar.pickle".format(model_path), 'rb') as scalar:
+                sc = pickle.load(scalar)
     X = sc.transform(X)
 
     return pd.DataFrame(X)
