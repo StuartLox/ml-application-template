@@ -37,18 +37,6 @@ class ScoringService(object):
                 os.path.join(model_path, 'ann-churn.h5'))
         return cls.model
 
-    # @classmethod
-    # def get_scalar(cls):
-    #     """
-    #     Get the model object for this instance,
-    #     loading it if it's not already loaded.
-    #     """
-    #     if cls.scalar is None:
-    #          # Feature Scaling
-    #         with open("{0}/scalar.pickle".format(model_path), 'rb') as scalar:
-    #             cls.scalar = pickle.load(scalar)
-    #         return cls.scalar
-
 
     @classmethod
     def predict(cls, input):
